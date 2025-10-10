@@ -32,7 +32,7 @@ trapinit0(void)
 
 	__asm__ volatile("outb %0, %1" : : "a"((char)'T'), "Nd"((unsigned short)0x3F8));
 	/* Use temp_idt in BSS instead of fixed IDTADDR until page tables are set up */
-	idt = temp_idt;
+	idt = IDTADDR;
 	__asm__ volatile("outb %0, %1" : : "a"((char)'0'), "Nd"((unsigned short)0x3F8));
 	vaddr = (uintptr)vectortable;
 	__asm__ volatile("outb %0, %1" : : "a"((char)'1'), "Nd"((unsigned short)0x3F8));

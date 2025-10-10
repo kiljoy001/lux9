@@ -93,17 +93,14 @@ iso: $(KERNEL) userspace/initrd.tar
 	cp $(KERNEL) iso_root/boot/
 	cp userspace/initrd.tar iso_root/boot/
 	cp limine.conf iso_root/boot/limine/
-	cp /home/scott/Repo/limine/limine-bios.sys iso_root/boot/limine/
-	cp /home/scott/Repo/limine/limine-bios-cd.bin iso_root/boot/limine/
-	cp /home/scott/Repo/limine/limine-uefi-cd.bin iso_root/boot/limine/
-	cp /home/scott/Repo/limine/BOOTX64.EFI iso_root/EFI/BOOT/
+	cp iso_root_test/boot/limine/limine-bios.sys iso_root/boot/limine/
+	cp iso_root_test/boot/limine/limine-bios-cd.bin iso_root/boot/limine/
+	cp iso_root_test/boot/limine/limine-uefi-cd.bin iso_root/boot/limine/
 	xorriso -as mkisofs -b boot/limine/limine-bios-cd.bin \
 		-no-emul-boot -boot-load-size 4 -boot-info-table \
 		--efi-boot boot/limine/limine-uefi-cd.bin \
 		-efi-boot-part --efi-boot-image --protective-msdos-label \
 		iso_root -o lux9.iso 2>/dev/null
-	-/home/scott/Repo/limine/limine bios-install lux9.iso 2>/dev/null || true
-	rm -rf iso_root
 	@echo "✓ Created lux9.iso"
 
 run: iso

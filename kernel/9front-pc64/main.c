@@ -247,7 +247,7 @@ main(void)
 	bootargsinit();
 	__asm__ volatile("outb %0, %1" : : "a"((char)'b'), "Nd"((unsigned short)0x3F8));
 	trapinit0();
-	debugchar('t');  /* trapinit0 done */
+	__asm__ volatile("outb %0, %1" : : "a"((char)'A'), "Nd"((unsigned short)0x3F8));
 	ioinit();
 	debugchar('i');  /* ioinit done */
 	i8250console();
@@ -314,21 +314,19 @@ main(void)
 	debugchar('R');  /* about to printinit */
 	printinit();
 	debugchar('r');  /* printinit done */
-	debugchar('U');  /* about to cpuidprint */
+	__asm__ volatile("outb %0, %1" : : "a"((char)'U'), "Nd"((unsigned short)0x3F8));  /* about to cpuidprint */
 	cpuidprint();
-	debugchar('u');  /* cpuidprint done */
-	debugchar('N');  /* about to mmuinit */
-	/* Skip mmuinit - needs xinit's memory pools */
-	/* mmuinit(); */
-	debugchar('n');  /* mmuinit skipped */
+	__asm__ volatile("outb %0, %1" : : "a"((char)'u'), "Nd"((unsigned short)0x3F8));  /* cpuidprint done */
+	__asm__ volatile("outb %0, %1" : : "a"((char)'N'), "Nd"((unsigned short)0x3F8));  /* about to mmuinit */
+	mmuinit();
+	debugchar('n');  /* mmuinit done */
 	debugchar('I');  /* about to arch->intrinit */
 	if(arch->intrinit)
 		arch->intrinit();
 	debugchar('i');  /* intrinit done */
 	debugchar('T');  /* about to timersinit */
-	/* Skip timersinit - needs xinit's memory pools */
-	/* timersinit(); */
-	debugchar('t');  /* timersinit skipped */
+	timersinit();
+	debugchar('t');  /* timersinit done */
 	debugchar('C');  /* about to arch->clockenable */
 	if(arch->clockenable)
 		arch->clockenable();
@@ -346,9 +344,8 @@ main(void)
 	chandevreset();
 	debugchar('d');  /* chandevreset done */
 	debugchar('A');  /* about to preallocpages */
-	/* Skip preallocpages for now - crashes accessing conf.mem */
-	/* preallocpages(); */
-	debugchar('a');  /* preallocpages skipped */
+	preallocpages();
+	debugchar('a');  /* preallocpages done */
 	debugchar('G');  /* about to pageinit */
 	pageinit();
 	debugchar('g');  /* pageinit done */

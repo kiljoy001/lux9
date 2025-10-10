@@ -77,7 +77,7 @@ taskswitch(uintptr stack)
 	}
 	__asm__ volatile("outb %0, %1" : : "a"((char)'F'), "Nd"((unsigned short)0x3F8));  /* before mmuflushtlb */
 	/* For now, skip TLB flush during first process switch - we're using same page tables */
-	/* mmuflushtlb(PADDR(m->pml4)); */
+	mmuflushtlb(PADDR(m->pml4));
 	__asm__ volatile("outb %0, %1" : : "a"((char)'~'), "Nd"((unsigned short)0x3F8));
 }
 
@@ -505,12 +505,6 @@ mmuswitch(Proc *proc)
 	MMU *p;
 
 	__asm__ volatile("outb %0, %1" : : "a"((char)'&'), "Nd"((unsigned short)0x3F8));
-
-	/* TEMPORARY: Skip ALL MMU switching for now, just do taskswitch */
-	__asm__ volatile("outb %0, %1" : : "a"((char)'T'), "Nd"((unsigned short)0x3F8));  /* Skipping MMU setup */
-	taskswitch((uintptr)proc);
-	__asm__ volatile("outb %0, %1" : : "a"((char)';'), "Nd"((unsigned short)0x3F8));  /* After taskswitch */
-	return;
 
 	mmuzap();
 	__asm__ volatile("outb %0, %1" : : "a"((char)'*'), "Nd"((unsigned short)0x3F8));
